@@ -29,8 +29,8 @@ export default function RootLayout({
                 </Link>
               </li>
               <li>
-                <Link href="/cart" className="hover:text-secondary">
-                  Carrito
+                <Link href="/orders" className="hover:text-secondary">
+                  Orders
                 </Link>
               </li>
               <li>

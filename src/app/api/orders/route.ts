@@ -28,11 +28,28 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const { items } = await req.json(); // Los artículos del carrito se reciben en el cuerpo de la solicitud
+    console.log('items', items);
+    if (!items || items.length === 0) {
+      return NextResponse.json(
+        { error: "No items in the cart" },
+        { status: 400 }
+      );
+    }
 
     // Calcular el total de la orden
     const totalPrice = items.reduce(
-      (total: number, item: { price: number; quantity: number }) => {
-        return total + item.price * item.quantity;
+      async (total: number, item: { dishId: number; quantity: number }) => {
+        // Aquí es necesario buscar el precio del plato usando `dishId`
+        // Suponiendo que tienes un método para buscar el plato por su ID
+        const dish = await prisma.dish.findUnique({
+          where: { id: item.dishId },
+        });
+
+        if (!dish) {
+          throw new Error(`Dish with ID ${item.dishId} not found`);
+        }
+
+        return total + dish.price * item.quantity;
       },
       0
     );
